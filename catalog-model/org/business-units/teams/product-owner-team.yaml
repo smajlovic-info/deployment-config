@@ -1,0 +1,12 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: product-owner
+  description: Product Owner Team
+spec:
+  type: team
+  profile:
+    displayName: Product Owner Team
+  parent: knauf-com-platform
+  children: []

@@ -1,0 +1,22 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: content-management
+  description: Content Management Team
+spec:
+  type: team
+  profile:
+    displayName: CMS Team
+  parent: knauf-com-platform
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: SmajlovicA
+spec:
+  profile:
+    displayName: Anis Smajlovic
+    email: anis.smajlovic@knauf.com
+  memberOf: [content-management, devops]

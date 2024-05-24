@@ -1,0 +1,98 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: node-app-with-github-actions-argocd
+  title: Node App with GitHub Actions abd ArgoCD
+  description: Create a Node service with GitHub Actions workflows and deploy with ArgoCD
+  tags:
+    - recommended
+spec:
+  owner: group:devops
+  type: service
+  parameters:
+    - title: Provide some simple information
+      required:
+        - service_name
+        - owner
+      properties:
+        service_name:
+          title: Name
+          type: string
+          description: Unique name of the service.
+          ui:field: EntityNamePicker
+        description:
+          title: Description
+          type: string
+          description: Help others understand what this service is for; optional.
+        owner:
+          title: Owner
+          type: string
+          description: Owner of the component
+          ui:field: OwnerPicker
+          ui:options:
+            allowedKinds:
+              - Group
+    - title: Choose a location
+      required:
+        - repoUrl
+        - githubCredentials
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+        githubCredentials:
+          title: PAT
+          type: string
+          description: You can get this from Key Vault.
+          ui:field: Secret
+
+  steps:
+    - id: fetch-app
+      name: Fetch Skeleton Service App + Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        copyWithoutTemplating:
+          - .github/workflows/*
+        values:
+          serviceName: ${{ parameters.service_name }}
+          description: ${{ parameters.description }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+          owner: ${{ parameters.owner }}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        allowedHosts: ["github.com"]
+        description: This is ${{ parameters.service_name }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+        repoVisibility: public
+        secrets:
+          "PAT": ${{ secrets.githubCredentials }}
+
+    - id: wait-for-github
+      name: Wait for GitHub
+      action: debug:wait
+      input:
+        seconds: 10
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: "/catalog-info.yaml"
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
