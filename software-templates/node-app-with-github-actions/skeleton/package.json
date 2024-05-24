@@ -1,5 +1,0 @@
-{
-    "name": "${{ values.serviceName }}",
-    "version": "1.0.0",
-    "author": "${{ values.owner }}"
-}

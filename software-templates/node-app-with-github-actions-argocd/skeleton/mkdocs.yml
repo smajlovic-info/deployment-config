@@ -1,7 +1,0 @@
-site_name: "${{ values.serviceName }} Docs"
-
-nav:
-  - Home: index.md
-
-plugins:
-  - techdocs-core
