@@ -1,0 +1,12 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform-2
+  description: Platform 2 Team
+spec:
+  type: team
+  profile:
+    displayName: Platform 2 Team
+  parent: knauf-com-platform
+  children: []

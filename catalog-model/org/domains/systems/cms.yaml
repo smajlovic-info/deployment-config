@@ -1,0 +1,9 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: cms
+  description: CMS Frontend System
+spec:
+  owner: content-management
+  domain: knauf-com
